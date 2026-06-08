@@ -1054,7 +1054,7 @@ function setupCardScrub(){
 function drawCards(){
   if(reduce || !tlCardData.length) return;
   const vh=window.innerHeight;
-  const FULL_HI=vh*0.62, FULL_LO=vh*0.40, FADE=vh*0.34;
+  const FULL_HI=vh*0.65, FULL_LO=vh*0.45, FADE=vh*0.20;
   tlCardData.forEach(({pol,tape})=>{
     if(!pol) return;
     const r=pol.getBoundingClientRect();
