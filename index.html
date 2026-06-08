@@ -1029,17 +1029,26 @@ function buildPath(){
     tlSvg.appendChild(c); return {el:c,y:p.y};
   });
 }
+// comprimento do path onde a curva cruza a coordenada vertical yTarget (busca binária)
+function lenAtY(yTarget){
+  if(pathEl.getPointAtLength(0).y>=yTarget) return 0;
+  if(pathEl.getPointAtLength(pathLen).y<=yTarget) return pathLen;
+  let lo=0, hi=pathLen;
+  for(let it=0;it<18;it++){
+    const mid=(lo+hi)/2;
+    if(pathEl.getPointAtLength(mid).y<yTarget) lo=mid; else hi=mid;
+  }
+  return (lo+hi)/2;
+}
 function drawTimeline(){
   if(!pathEl) return;
   const stageRect=tlStage.getBoundingClientRect();
   const vh=window.innerHeight;
-  const total=stageRect.height;
-  // progresso: começa quando o topo entra, termina perto do fim
-  let prog=(vh*0.85 - stageRect.top)/(total*0.92);
-  prog=Math.max(0,Math.min(1,prog));
-  pathEl.style.strokeDashoffset=pathLen*(1-prog);
-  const drawnY=prog*total;
-  dotEls.forEach(d=>{ d.el.style.opacity = d.y<=drawnY+10 ? '1':'0.15'; });
+  // linha de tela fixa em 62% -> coords locais do svg
+  const yLine=vh*0.62 - stageRect.top;
+  const drawnLen=lenAtY(yLine);
+  pathEl.style.strokeDashoffset=pathLen-drawnLen;
+  dotEls.forEach(d=>{ d.el.style.opacity = d.y<=yLine ? '1':'0.15'; });
 }
 
 /* ---- cards da timeline dirigidos pelo scroll (reversível) ---- */
